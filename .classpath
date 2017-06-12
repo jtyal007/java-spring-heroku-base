@@ -79,6 +79,7 @@
 	<classpathentry kind="var" path="M2_REPO/org/webjars/jquery-ui/1.11.4/jquery-ui-1.11.4.jar"/>
 	<classpathentry kind="var" path="M2_REPO/org/webjars/bootstrap/3.3.6/bootstrap-3.3.6.jar"/>
 	<classpathentry kind="var" path="M2_REPO/org/springframework/boot/spring-boot-devtools/1.5.2.RELEASE/spring-boot-devtools-1.5.2.RELEASE.jar"/>
+	<classpathentry kind="var" path="M2_REPO/commons-dbcp/commons-dbcp/2.2/commons-dbcp-2.2.jar"/>
 	<classpathentry kind="src" output="target/test-classes" path="src/test/java">
 		<attributes>
 			<attribute name="optional" value="true"/>

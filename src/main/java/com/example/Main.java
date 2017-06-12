@@ -16,17 +16,26 @@
 
 package com.example;
 
+import com.example.database.DatabaseConfig;
+import com.example.util.Logger;
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
+
+import org.apache.commons.dbcp.BasicDataSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
+import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 
+import javax.annotation.PostConstruct;
 import javax.sql.DataSource;
+
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -34,6 +43,9 @@ import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.Map;
 
+// TODO for page navigation and controller logic have a look at 
+// https://spring.io/guides/gs/serving-web-content/
+// The Main here has been jammed as a controller class
 @Controller
 @SpringBootApplication
 public class Main {
@@ -41,11 +53,47 @@ public class Main {
   @Value("${spring.datasource.url}")
   private String dbUrl;
 
-  @Autowired
-  private DataSource dataSource;
+  
+  private static DataSource dataSource; // autowire does not work on static sources
 
+  @Autowired
+  private DataSource dataSource2;
+  
   public static void main(String[] args) throws Exception {
+	Logger.log(Main.class.getName(), "calling Main Method");
     SpringApplication.run(Main.class, args);
+    // TODO connecting manually to the database works fine. Need to Autowire this shiet
+    //myRealMainMethod();
+  
+  }
+  
+
+  public static void myRealMainMethod() throws SQLException, URISyntaxException {
+	  Logger.log(Main.class.getName(), "calling myRealMainMethod");
+	  DatabaseConfig config = new DatabaseConfig();
+	  dataSource = config.dataSource();
+	  
+      Statement stmt = dataSource.getConnection().createStatement();
+     /* stmt.executeUpdate("DROP TABLE IF EXISTS ticks");
+      stmt.executeUpdate("CREATE TABLE ticks (tick timestamp)");
+      stmt.executeUpdate("INSERT INTO ticks VALUES (now())");*/
+      ResultSet rs = stmt.executeQuery("select * from actor");
+      while (rs.next()) {
+          System.out.println("Read from DB: " + rs.getString("actor_id") + " : " +  rs.getString("first_name") + ", " + rs.getString("last_name"));
+      }
+  }
+  
+  
+  // TODO test method to connect to the database
+  public static void testPostgresDB() throws URISyntaxException{
+	  
+	  
+	 /* URI dbUri = new URI(System.getenv("DATABASE_URL"));
+	    String username = dbUri.getUserInfo().split(":")[0];
+	    String password = dbUri.getUserInfo().split(":")[1];
+	    String dbUrl = "jdbc:postgresql://" + dbUri.getHost() + dbUri.getPath();
+
+	    Logger.log("username", username, "password", password, "dbUrl", dbUrl);*/
   }
 
   @RequestMapping("/")
@@ -74,15 +122,32 @@ public class Main {
     }
   }
 
-  @Bean
-  public DataSource dataSource() throws SQLException {
-    if (dbUrl == null || dbUrl.isEmpty()) {
+  //@Bean
+  public DataSource dataSource() throws SQLException, URISyntaxException {
+	  
+	  
+ /*   if (dbUrl == null || dbUrl.isEmpty()) {
       return new HikariDataSource();
     } else {
       HikariConfig config = new HikariConfig();
       config.setJdbcUrl(dbUrl);
       return new HikariDataSource(config);
-    }
+    }*/
+	  
+	  URI dbUri = new URI(System.getenv("DATABASE_URL"));
+
+      String username = dbUri.getUserInfo().split(":")[0];
+      String password = dbUri.getUserInfo().split(":")[1];
+      String dbUrl = "jdbc:postgresql://" + dbUri.getHost() + dbUri.getPath();
+      
+      Logger.log(this.getClass().getName(), "username", username, "password", password, "dbUrl", dbUrl);
+
+      BasicDataSource basicDataSource = new BasicDataSource();
+      basicDataSource.setUrl(dbUrl);
+      basicDataSource.setUsername(username);
+      basicDataSource.setPassword(password);
+
+      return basicDataSource;
   }
 
 }
