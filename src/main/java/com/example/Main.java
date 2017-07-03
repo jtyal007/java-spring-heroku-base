@@ -63,13 +63,13 @@ public class Main {
 	Logger.log(Main.class.getName(), "calling Main Method");
     SpringApplication.run(Main.class, args);
     // TODO connecting manually to the database works fine. Need to Autowire this shiet
-    //myRealMainMethod();
+    //testingDatabaseConnection();
   
   }
   
 
-  public static void myRealMainMethod() throws SQLException, URISyntaxException {
-	  Logger.log(Main.class.getName(), "calling myRealMainMethod");
+  public static void testingDatabaseConnection() throws SQLException, URISyntaxException {
+	  Logger.log(Main.class.getName(), "calling testingDatabaseConnection");
 	  DatabaseConfig config = new DatabaseConfig();
 	  dataSource = config.dataSource();
 	  
