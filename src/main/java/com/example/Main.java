@@ -17,6 +17,8 @@
 package com.example;
 
 import com.example.database.DatabaseConfig;
+import com.example.model.Customer;
+import com.example.repo.CustomerRepository;
 import com.example.util.Logger;
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
@@ -59,12 +61,25 @@ public class Main {
   @Autowired
   private DataSource dataSource2;
   
+  @Autowired
+  CustomerRepository repository;
+  
   public static void main(String[] args) throws Exception {
 	Logger.log(Main.class.getName(), "calling Main Method");
     SpringApplication.run(Main.class, args);
     // TODO connecting manually to the database works fine. Need to Autowire this shiet
     //testingDatabaseConnection();
   
+  }
+  
+  @RequestMapping("/findall") 
+  public String findAll() {
+	  String result = "<html>";
+	  for(Customer customer: repository.findAll()) {
+		  result += "<div>" + customer.toString() + "</div>";
+		  
+	  }
+	  return result + "</html>";
   }
   
 
@@ -103,25 +118,57 @@ public class Main {
 
   @RequestMapping("/db")
   String db(Map<String, Object> model) {
-    try (Connection connection = dataSource.getConnection()) {
-      Statement stmt = connection.createStatement();
-      stmt.executeUpdate("CREATE TABLE IF NOT EXISTS ticks (tick timestamp)");
-      stmt.executeUpdate("INSERT INTO ticks VALUES (now())");
-      ResultSet rs = stmt.executeQuery("SELECT tick FROM ticks");
+    try (Connection connection = dataSource2.getConnection()) {
+      //Statement stmt = connection.createStatement();
+      //stmt.executeUpdate("CREATE TABLE IF NOT EXISTS ticks (tick timestamp)");
+      //stmt.executeUpdate("INSERT INTO ticks VALUES (now())");
+      //ResultSet rs = stmt.executeQuery("SELECT tick FROM ticks");
 
-      ArrayList<String> output = new ArrayList<String>();
-      while (rs.next()) {
-        output.add("Read from DB: " + rs.getTimestamp("tick"));
-      }
+      //ArrayList<String> output = new ArrayList<String>();
+      //while (rs.next()) {
+      //  output.add("Read from DB: " + rs.getTimestamp("tick"));
+      //}
 
-      model.put("records", output);
+    	/*for(Customer customer: repository.findAll()) {
+    		model.put("records", customer.toString());
+   		  
+   	  	}*/
+    	model.put("records", repository.findAll());
+      
       return "db";
     } catch (Exception e) {
       model.put("message", e.getMessage());
       return "error";
     }
   }
+  
+  @RequestMapping("/test")
+  String test() {
+    try (Connection connection = dataSource2.getConnection()) {
+      //Statement stmt = connection.createStatement();
+      //stmt.executeUpdate("CREATE TABLE IF NOT EXISTS ticks (tick timestamp)");
+      //stmt.executeUpdate("INSERT INTO ticks VALUES (now())");
+      //ResultSet rs = stmt.executeQuery("SELECT tick FROM ticks");
 
+      //ArrayList<String> output = new ArrayList<String>();
+      //while (rs.next()) {
+      //  output.add("Read from DB: " + rs.getTimestamp("tick"));
+      //}
+
+    	/*for(Customer customer: repository.findAll()) {
+    		model.put("records", customer.toString());
+   		  
+   	  	}*/
+   
+      
+      return "db";
+    } catch (Exception e) {
+     
+      return "error";
+    }
+  }
+
+  // Note that Spring Boot will reuse your DataSource anywhere one is required
   //@Bean
   public DataSource dataSource() throws SQLException, URISyntaxException {
 	  
