@@ -7,6 +7,8 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
 @Entity
@@ -18,7 +20,7 @@ public class Customer implements Serializable{
 	 */
 	private static final long serialVersionUID = 1L;
 	
-	@Id
+	@Id // this is required for all Entities which acts as the primary key
 	@GeneratedValue(strategy = GenerationType.AUTO) // the strategy used to generate the ID
 	@Column(name = "customer_id")
 	private int id;
@@ -32,6 +34,12 @@ public class Customer implements Serializable{
 	@Column(name = "email")
 	private String email;
 	
+	
+	// Example of JPA/Hibernate mapping directly from the database
+	@OneToOne  //  (optional=false)optional is for inner or outer join, default is true
+	@JoinColumn( name="address_id" )
+	private Address address;
+	
 	protected Customer() {
 		// Used by JPA
 	}
@@ -44,7 +52,7 @@ public class Customer implements Serializable{
 	
 	@Override
 	public String toString() {
-		return String.format("Customer[id=%d, firstName='%s', lastName='%s', email='%s']", id, firstName, lastName, email);
+		return String.format("Customer[id=%d, firstName='%s', lastName='%s', email='%s', address='%s']", id, firstName, lastName, email, address.getAddress());
 	}
 
 	

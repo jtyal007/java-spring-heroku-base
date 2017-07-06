@@ -161,7 +161,7 @@ public class Main {
    	  	}*/
    
       
-      return "db";
+      return "test";
     } catch (Exception e) {
      
       return "error";
