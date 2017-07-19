@@ -31,6 +31,10 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import javax.annotation.PostConstruct;
@@ -195,6 +199,22 @@ public class Main {
       basicDataSource.setPassword(password);
 
       return basicDataSource;
+  }
+  
+  @GetMapping("/newCustomer") //@RequestMapping default for all HTTP operations, use @Getmapping for Get requests and @PostMapping for post requests
+  String newCustomer(Model model) {
+	  
+	  model.addAttribute("customer", new Customer());
+      
+      return "newCustomer";
+
+  }
+  
+  @PostMapping("/newCustomer")
+  public String newCustomerSubmit(@ModelAttribute Customer customer) {
+	  Logger.log(this.getClass().getName(), "Customer", customer.toString() );
+	  System.out.println(customer);
+	  return "db";
   }
 
 }

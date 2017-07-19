@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+	th:replace="~{fragments/layout :: layout (~{::body},'db')}">
+
+<body>
+
+	<form action="#" th:action="@{/newCustomer}" th:object="${customer}" method="post">
+	<div class="container">
+		<h1>New Customer Details</h1>
+
+		<div>
+			<label for="type">First Name</label> 
+			<input type="text"
+				th:field="*{firstName}" name="firstName" id="firstName" required autofocus />
+		</div>
+		<div>
+			<label for="type">Last Name</label> <input type="text"
+				th:field="*{lastName}" name="lastName" id="lastName" required autofocus />
+		</div>
+		<div>
+			<label for="type">Email</label> <input type="email"
+				th:field="*{email}" name="email" id="email" required autofocus />
+		</div>
+		
+	<input type="submit" value="submit"/>
+
+	</div>
+	</form>
+</body>
+</html>

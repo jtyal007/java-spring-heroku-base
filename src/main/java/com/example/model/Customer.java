@@ -35,12 +35,52 @@ public class Customer implements Serializable{
 	private String email;
 	
 	
+	public int getId() {
+		return id;
+	}
+
+	public void setId(int id) {
+		this.id = id;
+	}
+
+	public String getFirstName() {
+		return firstName;
+	}
+
+	public void setFirstName(String firstName) {
+		this.firstName = firstName;
+	}
+
+	public String getLastName() {
+		return lastName;
+	}
+
+	public void setLastName(String lastName) {
+		this.lastName = lastName;
+	}
+
+	public String getEmail() {
+		return email;
+	}
+
+	public void setEmail(String email) {
+		this.email = email;
+	}
+
+	public Address getAddress() {
+		return address;
+	}
+
+	public void setAddress(Address address) {
+		this.address = address;
+	}
+
 	// Example of JPA/Hibernate mapping directly from the database
 	@OneToOne  //  (optional=false)optional is for inner or outer join, default is true
 	@JoinColumn( name="address_id" )
 	private Address address;
 	
-	protected Customer() {
+	public Customer() {
 		// Used by JPA
 	}
 	
@@ -52,7 +92,7 @@ public class Customer implements Serializable{
 	
 	@Override
 	public String toString() {
-		return String.format("Customer[id=%d, firstName='%s', lastName='%s', email='%s', address='%s']", id, firstName, lastName, email, address.getAddress());
+		return String.format("Customer[id=%d, firstName='%s', lastName='%s', email='%s']", id, firstName, lastName, email);
 	}
 
 	
